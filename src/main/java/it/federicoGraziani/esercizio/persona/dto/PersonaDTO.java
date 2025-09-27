@@ -16,21 +16,13 @@ public class PersonaDTO {
 
     private String uuid;
 
-    @NotNull
-    @NotEmpty
     private String nome;
 
-    @NotNull
-    @NotEmpty
     private String cognome;
 
-    @NotNull
-    @NotEmpty
     private String codiceFiscale;
 
-    @NotNull
-    private LocalDate annoNascita;
+    private LocalDate dataNascita;
 
-    @NotEmpty
     private String residenzaUuid;
 }

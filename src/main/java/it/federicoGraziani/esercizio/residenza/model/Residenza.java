@@ -18,6 +18,8 @@ public class Residenza {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String uuid;
+
     @Column(name = "indirizzo", nullable = false, length = 255)
     private String indirizzo;
 

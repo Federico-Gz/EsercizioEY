@@ -21,6 +21,8 @@ public class Persona {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String uuid;
+
     @Column(name= "nome", nullable = false, length = 255)
     private String nome;
 
@@ -33,7 +35,8 @@ public class Persona {
     @Column(name = "data_nascita", nullable = false)
     private LocalDate dataNascita;
 
-    @OneToOne(mappedBy = "persona")
+    //se elimino una persona, viene eliminata anche la sua residenza
+    @OneToOne(mappedBy = "persona", cascade = CascadeType.ALL, orphanRemoval = true)
     private Residenza residenza;
 }
 
