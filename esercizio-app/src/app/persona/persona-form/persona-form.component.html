@@ -1,0 +1,24 @@
+<form class="form-card" (ngSubmit)="onSubmit()">
+  <div class="form-group">
+    <label>Nome:</label>
+    <input type="text" [(ngModel)]="persona.nome" name="nome" required>
+  </div>
+
+  <div class="form-group">
+    <label>Cognome:</label>
+    <input type="text" [(ngModel)]="persona.cognome" name="cognome" required>
+  </div>
+
+  <div class="form-group">
+    <label>Codice Fiscale:</label>
+    <input type="text" [(ngModel)]="persona.codiceFiscale" name="codiceFiscale" required>
+  </div>
+
+  <div class="form-group">
+    <label>Data di Nascita:</label>
+    <input type="date" [(ngModel)]="persona.dataNascita" name="dataNascita" required>
+  </div>
+
+  <button type="submit" class="btn-primary">Salva</button>
+</form>
+

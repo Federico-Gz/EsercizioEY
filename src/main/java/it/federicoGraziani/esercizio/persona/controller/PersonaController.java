@@ -67,13 +67,9 @@ public class PersonaController {
         personaService.deleteResidenza(uuid);
     }
 
-    //RECUPERA PERSONE IN BASE A INDIRIZZO E/O CITTA E/O CAP
+    //RECUPERA PERSONE IN BASE A INDIRIZZO
     @GetMapping("/ricerca")
-    public List<PersonaDTO> ricercaPersone(
-            @RequestParam(required = false) String indirizzo,
-            @RequestParam(required = false) String citta,
-            @RequestParam(required = false) String cap) {
-
-        return personaService.ricerca(indirizzo, citta, cap);
+    public List<PersonaDTO> ricercaPersone(@RequestParam(required = false) String indirizzo) {
+        return personaService.ricerca(indirizzo);
     }
 }

@@ -1,11 +1,12 @@
 package it.federicoGraziani.esercizio.persona.service;
 
 import it.federicoGraziani.esercizio.persona.dto.PersonaDTO;
+import it.federicoGraziani.esercizio.persona.exception.PersonaNotFoundException;
+import it.federicoGraziani.esercizio.persona.exception.ResidenzaNotFoundException;
 import it.federicoGraziani.esercizio.persona.model.Persona;
 import it.federicoGraziani.esercizio.persona.repository.PersonaRepository;
 import it.federicoGraziani.esercizio.residenza.dto.ResidenzaDTO;
 import it.federicoGraziani.esercizio.residenza.model.Residenza;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,10 +37,10 @@ public class PersonaServiceImpl implements PersonaService{
     @Override
     public PersonaDTO findByUuid(String uuid) {
         Optional<Persona> persona= personaRepository.findByUuid(uuid);
-        return persona.map(this::modelToDto).orElseThrow(() -> new EntityNotFoundException("Persona non trovata"));
+        return persona.map(this::modelToDto).orElseThrow(() -> new PersonaNotFoundException(uuid));
     }
 
-    //CREAZIONE PERSONA (RESIDENZA SI AGGIUNGE DOPO)
+    //CREAZIONE PERSONA
     @Override
     public PersonaDTO save(PersonaDTO personaDTO) {
         personaDTO.setUuid(UUID.randomUUID().toString());
@@ -49,7 +51,7 @@ public class PersonaServiceImpl implements PersonaService{
     //AGGIUNTA/MODIFICA RESIDENZA AD UNA PERSONA ESISTENTE
     @Override
     public ResidenzaDTO addOrUpdateResidenza(String personaUuid, ResidenzaDTO residenzaDTO){
-        Persona persona = personaRepository.findByUuid(personaUuid).orElseThrow();
+        Persona persona = personaRepository.findByUuid(personaUuid).orElseThrow(() -> new PersonaNotFoundException(personaUuid));
 
         Residenza residenza = persona.getResidenza();
         if(residenza != null){
@@ -87,7 +89,7 @@ public class PersonaServiceImpl implements PersonaService{
     //ELIMINAZIONE RESIDENZA DI UNA PERSONA ESISTENTE
     @Override
     public void deleteResidenza(String personaUuid) {
-        Persona persona = personaRepository.findByUuid(personaUuid).orElseThrow();
+        Persona persona = personaRepository.findByUuid(personaUuid).orElseThrow(() -> new PersonaNotFoundException(personaUuid));
 
         Residenza residenza = persona.getResidenza();
         if (residenza != null) {
@@ -95,7 +97,7 @@ public class PersonaServiceImpl implements PersonaService{
             persona.setResidenza(null);//JPA elimina automaticamente la residenza per via di orphanRemoval = true
             personaRepository.save(persona);
         } else {
-            throw new EntityNotFoundException("Residenza non trovata per questa persona");
+            throw new ResidenzaNotFoundException(personaUuid);
         }
     }
 
@@ -137,12 +139,19 @@ public class PersonaServiceImpl implements PersonaService{
     }
 
     @Override
-    public List<PersonaDTO> ricerca(String indirizzo, String citta, String cap) {
-        List<Persona> persone = personaRepository.ricerca(indirizzo, citta, cap);
+    public List<PersonaDTO> ricerca(String indirizzo) {
+        if (indirizzo == null || indirizzo.isEmpty()) {
+            return findAll(); // ritorna tutte se vuoto
+        }
+        List<Persona> persone = personaRepository.findByResidenzaIndirizzoContainingIgnoreCase(indirizzo);
         return persone.stream()
                 .map(this::modelToDto)
-                .toList();
+                .collect(Collectors.toList());
     }
+
+
+
+
 
     private PersonaDTO modelToDto(Persona persona){
         return PersonaDTO.builder()
@@ -151,20 +160,29 @@ public class PersonaServiceImpl implements PersonaService{
                 .cognome(persona.getCognome())
                 .codiceFiscale(persona.getCodiceFiscale())
                 .dataNascita(persona.getDataNascita())
-                .residenzaUuid(persona.getResidenza() != null ? persona.getResidenza().getUuid() : null)
+                .residenza(persona.getResidenza() != null
+                        ? ResidenzaDTO.builder()
+                            .uuid(persona.getResidenza().getUuid())
+                            .indirizzo(persona.getResidenza().getIndirizzo())
+                            .citta(persona.getResidenza().getCitta())
+                            .cap(persona.getResidenza().getCap())
+                            .personaUuid(persona.getUuid())
+                            .build()
+                        : null
+                )
                 .build();
     }
 
-    private Persona dtoToModel(PersonaDTO personaDTO, Residenza residenza){
-        return Persona.builder()
-                .uuid(personaDTO.getUuid())
-                .nome(personaDTO.getNome())
-                .cognome(personaDTO.getCognome())
-                .codiceFiscale(personaDTO.getCodiceFiscale())
-                .dataNascita(personaDTO.getDataNascita())
-                .residenza(residenza)
-                .build();
-    }
+//    private Persona dtoToModel(PersonaDTO personaDTO, Residenza residenza){
+//        return Persona.builder()
+//                .uuid(personaDTO.getUuid())
+//                .nome(personaDTO.getNome())
+//                .cognome(personaDTO.getCognome())
+//                .codiceFiscale(personaDTO.getCodiceFiscale())
+//                .dataNascita(personaDTO.getDataNascita())
+//                .residenza(residenza)
+//                .build();
+//    }
 
     private Persona dtoToModel(PersonaDTO personaDTO) {
         return Persona.builder()

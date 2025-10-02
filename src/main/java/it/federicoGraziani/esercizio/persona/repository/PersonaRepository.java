@@ -13,19 +13,10 @@ import java.util.Optional;
 public interface PersonaRepository extends JpaRepository<Persona, Long> {
 
     List<Persona> findAll();
-    List<Persona> findByResidenza_Indirizzo(String indirizzo);
-    List<Persona> findByResidenza_Citta(String citta);
-    List<Persona> findByResidenza_Cap(String cap);
-
-    @Query("SELECT p FROM Persona p WHERE " +
-            "(:indirizzo IS NULL OR p.residenza.indirizzo = :indirizzo) AND " +
-            "(:citta IS NULL OR p.residenza.citta = :citta) AND " +
-            "(:cap IS NULL OR p.residenza.cap = :cap)")
-    List<Persona> ricerca(@Param("indirizzo") String indirizzo,
-                          @Param("citta") String citta,
-                          @Param("cap") String cap);
-
 
     Optional<Persona> findByUuid(String uuid);
 
+    // Ricerca per indirizzo
+    @Query("SELECT p FROM Persona p JOIN p.residenza r WHERE LOWER(r.indirizzo) LIKE LOWER(CONCAT('%', :indirizzo, '%'))")
+    List<Persona> findByResidenzaIndirizzoContainingIgnoreCase(@Param("indirizzo") String indirizzo);
 }

@@ -1,5 +1,6 @@
 package it.federicoGraziani.esercizio.persona.dto;
 
+import it.federicoGraziani.esercizio.residenza.dto.ResidenzaDTO;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -24,5 +25,5 @@ public class PersonaDTO {
 
     private LocalDate dataNascita;
 
-    private String residenzaUuid;
+    private ResidenzaDTO residenza;
 }

@@ -1,0 +1,18 @@
+<form class="form-card" (ngSubmit)="onSave()">
+  <div class="form-group">
+    <label>Indirizzo:</label>
+    <input type="text" [(ngModel)]="residenza!.indirizzo" name="indirizzo" required>
+  </div>
+
+  <div class="form-group">
+    <label>Città:</label>
+    <input type="text" [(ngModel)]="residenza!.citta" name="citta" required>
+  </div>
+
+  <div class="form-group">
+    <label>CAP:</label>
+    <input type="text" [(ngModel)]="residenza!.cap" name="cap" required>
+  </div>
+
+  <button type="submit" class="btn-primary">Salva Residenza</button>
+</form>

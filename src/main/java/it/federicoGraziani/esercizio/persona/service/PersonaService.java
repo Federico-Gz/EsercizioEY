@@ -16,9 +16,9 @@ public interface PersonaService {
 
     //ELIMINAZIONE RESIDENZA DI UNA PERSONA ESISTENTE
     void deleteResidenza(String personaUuid);
-
-    List<PersonaDTO> ricerca(String indirizzo, String citta, String cap);
     PersonaDTO update(String uuid, PersonaDTO persona);
     PersonaDTO partialUpdate(String uuid, PersonaDTO persona);
     void deleteByUuid(String uuid);
+
+    List<PersonaDTO> ricerca(String indirizzo);
 }

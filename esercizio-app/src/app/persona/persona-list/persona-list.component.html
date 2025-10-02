@@ -1,0 +1,25 @@
+<div class="container">
+  <h2>Lista Persone</h2>
+
+  <div class="filter">
+    <input
+      type="text"
+      placeholder="Cerca per indirizzo..."
+      [(ngModel)]="indirizzoFiltro"
+      (input)="filtraPersone()"
+    >
+  </div>
+
+  <div *ngIf="loading">Caricamento...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <ul>
+    <li *ngFor="let persona of persone">
+      {{ persona.nome }} {{ persona.cognome }} ({{ persona.codiceFiscale }})
+      <div class="actions">
+        <button (click)="goToDetail(persona.uuid)">Dettagli</button>
+        <button (click)="deletePersona(persona.uuid)">Elimina</button>
+      </div>
+    </li>
+  </ul>
+</div>

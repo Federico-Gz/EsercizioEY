@@ -1,0 +1,23 @@
+<div class="container">
+  <h2>Dettaglio Persona</h2>
+
+  <div *ngIf="loading">Caricamento...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="persona">
+    <div class="card">
+      <app-persona-form [persona]="persona" (save)="savePersona($event)"></app-persona-form>
+      <button class="btn-danger" (click)="deletePersona()">Elimina Persona</button>
+    </div>
+
+    <div class="card">
+      <h3>Residenza</h3>
+      <app-residenza-form
+        [residenza]="persona.residenza"
+        [personaUuid]="persona.uuid"
+        (save)="saveResidenza($event)">
+      </app-residenza-form>
+      <button *ngIf="persona.residenza" class="btn-danger" (click)="deleteResidenza()">Elimina Residenza</button>
+    </div>
+  </div>
+</div>

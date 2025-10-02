@@ -23,7 +23,7 @@ public class Residenza {
     @Column(name = "indirizzo", nullable = false, length = 255)
     private String indirizzo;
 
-    @Column(name = "cap", nullable = false, length = 5)
+    @Column(name = "cap", nullable = false, length = 255)
     private String cap;
 
     @Column(name = "citta", nullable = false, length = 255)
